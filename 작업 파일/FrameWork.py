@@ -1,12 +1,28 @@
 from 던파API파싱하기 import *
 from 캐릭터정보 import *
 
-class FrameWork:
+class 던파스카우터프레임워크:
     def __init__(self):
-        self.__loopFlag = 1
+        self.__loopFlag = True
         self.__xmlFD = -1
+        self.__기준캐릭터_퀘전 = None
+        self.__기준캐릭터_노오력 = None
+        self.__기준캐릭터_모인물 = None
         self.__기준캐릭터사전 = None
         self.__비교캐릭터사전 = None
+
+    def __캐릭터가져오기(self):
+        캐릭터정보 = None
+        서버이름 = input("가져오실 캐릭터의 서버를 입력해주세요 : ")
+        캐릭터이름 = input("가져오실 캐릭터의 이름을 입력해주세요 : ")
+        캐릭터정보 = 캐릭터정보불러오기(서버이름, 캐릭터이름)
+
+        if(캐릭터정보 == False):
+            print("해당 캐릭터는 존재하지 않습니다. 가져오기에 실패합니다.")
+            return None
+        else:
+            print("캐릭터 불러오기에 성공 하였습니다.1")
+            return 캐릭터정보
 
     def __printMenu(self):
         print("     던파 스카우터!     ")
@@ -16,22 +32,40 @@ class FrameWork:
         print("측정 캐릭터 설정하기 : e")
         print("측정 캐릭터 출력하기 : r")
         print("     종료하기      : z")
-        print("==================")
+        print("======================")
 
 
     def __기준_캐릭터_설정하기(self):
-        pass
+        print("어떤 설정을 이용하실 건가요?")
+        print("설정 캐릭터 사용하기 : q")
+        print("서버에서 불러오기 : w")
+
+        선택 = str(input ('선택하기   :  '))
+
+        if(선택 =='q'):
+            print("어떤 설정을 이용하실 건가요?")
+            print("1. 퀘전  2. 노오오력  3. 모인물")
+            선택 = str(input('선택하기   :  '))
+            pass
+
+        elif(선택 == 'w'):
+            __비교캐릭터사전 = __캐릭터가져오기()
+
+        else:
+            print("설정되지 않은 입력입니다.")
+
 
     def __측정_캐릭터_가져오기(self):
-        pass
+        self.__측정캐릭터사전 = self.__캐릭터가져오기()
 
     def __측정_캐릭터_설정하기(self):
         pass
 
     def __측정_캐릭터_출력하기(self):
-        pass
+        if(__측정캐릭터사전 !=  None):
+            print("측정할 캐릭터의 정보 : " ,__측정캐릭터사전)
 
-    def launcherFunction(self, menu):
+    def __launcherFunction(self, menu):
         if menu == 'q':
             self.__기준_캐릭터_설정하기()
         elif menu == 'w':
@@ -41,14 +75,20 @@ class FrameWork:
         elif menu == 'r':
             self.__측정_캐릭터_출력하기()
         elif menu == 'z':
-            self.__loopFlag = 0 #종료하기
+            self.__loopFlag = False #종료하기
         else:
             print("error : 설정 된 키값이 아닙니다. capslock이나 한글 설정을 확인해주세요.")
 
-    def Active(self):
-        while(self.loopFlag > 0):
+
+    def 실행하기(self):
+        while(self.__loopFlag > 0):
             self.__printMenu()
             menuKey = str(input ('메뉴 선택하기   :  '))
             self.__launcherFunction(menuKey)
         else:
             print ("프로그램을 이용해 주셔서 감사합니다.")
+
+
+fw = 던파스카우터프레임워크()
+
+fw.실행하기()

@@ -3,42 +3,45 @@ import json
 import urllib
 
 server = "api.neople.co.kr"
-conn = http.client.HTTPSConnection(server)
+apikey = "9BdgXATgR7uy3XIzIaJPBHfECPoJGKlq"
+던파API연결 = http.client.HTTPSConnection(server)
 
 게임서버사전 = {'카인' : 'cain', '디레지에' : 'diregie', "시로코" :'siroco',
                   '프레이' : 'prey', '카시야스' : 'casillas', '힐더' : 'hilder',
                   '안톤' : 'anton', '바칼' : 'bakal'}
 
 
-
 def 캐릭터정보불러오기(서버이름, 캐릭터이름):
     # myApiKey = "9BdgXATgR7uy3XIzIaJPBHfECPoJGKlq"
     서버아이디 = 게임서버사전[서버이름]
     캐릭터이름= urllib.parse.quote(캐릭터이름)
-    conn.request("GET", "https://api.neople.co.kr/df/servers/"+서버아이디+"/characters?characterName=" +캐릭터이름 + "&limit=<limit>&wordType=<wordType>&apikey=9BdgXATgR7uy3XIzIaJPBHfECPoJGKlq") #서버에 GET 요청
-    req = conn.getresponse() 			#openAPI 서버에서 보내온 요청을 받아옴
+    던파API연결.request("GET", "https://api.neople.co.kr/df/servers/"+서버아이디+"/characters?characterName=" +캐릭터이름 + "&limit=<limit>&wordType=<wordType>&apikey=" + apikey) #서버에 GET 요청
+    req = 던파API연결.getresponse() 			#openAPI 서버에서 보내온 요청을 받아옴
     #print(req.status, req.reason)
-    cLen = req.getheader("Content-Length") 	#가져온 데이터 길이
-    data = req.read(int(cLen))
-    dict = json.loads(data)
+    if(req.status == 200):
+        cLen = req.getheader("Content-Length") 	#가져온 데이터 길이
+        data = req.read(int(cLen))
+        dict = json.loads(data)
 
-    캐릭터아이디 = dict['rows'][0]["characterId"]
+        캐릭터아이디 = dict['rows'][0]["characterId"]
 
-    conn.request("GET", "https://api.neople.co.kr/df/servers/" +서버아이디+ "/characters/"+캐릭터아이디+"/equip/equipment?apikey=9BdgXATgR7uy3XIzIaJPBHfECPoJGKlq") #서버에 GET 요청
-    req = conn.getresponse() 			#openAPI 서버에서 보내온 요청을 받아옴
-    cLen = req.getheader("Content-Length") 	#가져온 데이터 길이
-    data = req.read(int(cLen))
-    dict = json.loads(data)
+        던파API연결.request("GET", "https://api.neople.co.kr/df/servers/" +서버아이디+ "/characters/"+캐릭터아이디+"/equip/equipment?apikey=" + apikey) #서버에 GET 요청
+        req = 던파API연결.getresponse() 			#openAPI 서버에서 보내온 요청을 받아옴
+        cLen = req.getheader("Content-Length") 	#가져온 데이터 길이
+        data = req.read(int(cLen))
+        dict = json.loads(data)
 
-    return dict
+        return dict
+
+    else : return False
 
 
 
 def 장비정보불러오기(장비이름):
     장비이름 = urllib.parse.quote(장비이름)
-    conn.request("GET",
-                 "https://api.neople.co.kr/df/items?itemName=" + 장비이름 + "&q=minLevel:<minLevel>,maxLevel:<maxLevel>,rarity:<rarity>,trade:<trade>&limit=<limit>&wordType=<wordType>&apikey=9BdgXATgR7uy3XIzIaJPBHfECPoJGKlq")  # 서버에 GET 요청
-    req = conn.getresponse()  # openAPI 서버에서 보내온 요청을 받아옴
+    던파API연결.request("GET",
+                 "https://api.neople.co.kr/df/items?itemName=" + 장비이름 + "&q=minLevel:<minLevel>,maxLevel:<maxLevel>,rarity:<rarity>,trade:<trade>&limit=<limit>&wordType=<wordType>&apikey=" + apikey)  # 서버에 GET 요청
+    req = 던파API연결.getresponse()  # openAPI 서버에서 보내온 요청을 받아옴
 
     if (req.status == 200):                     #장비가 있을 경우에만 가져오도록
         cLen = req.getheader("Content-Length")  # 가져온 데이터 길이
@@ -46,9 +49,9 @@ def 장비정보불러오기(장비이름):
         dict = json.loads(data)
         아이템아이디 = dict["rows"][0]['itemId']
 
-        conn.request("GET",
-                     "https://api.neople.co.kr/df/items/" + 아이템아이디 + "?apikey=9BdgXATgR7uy3XIzIaJPBHfECPoJGKlq")  # 서버에 GET 요청
-        req = conn.getresponse()
+        던파API연결.request("GET",
+                     "https://api.neople.co.kr/df/items/" + 아이템아이디 + "?apikey=" + apikey)  # 서버에 GET 요청
+        req = 던파API연결.getresponse()
         cLen = req.getheader("Content-Length")  # 가져온 데이터 길이
         data = req.read(int(cLen))
         dict = json.loads(data)
