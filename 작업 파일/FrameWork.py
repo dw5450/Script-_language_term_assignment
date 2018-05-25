@@ -8,8 +8,8 @@ class 던파스카우터프레임워크:
         self.__기준캐릭터_퀘전 = None
         self.__기준캐릭터_노오력 = None
         self.__기준캐릭터_모인물 = None
-        self.__기준캐릭터사전 = None
-        self.__비교캐릭터사전 = None
+        self.__기준캐릭터 = None
+        self.__측정캐릭터 = None
 
     def __캐릭터가져오기(self):
         캐릭터정보 = None
@@ -49,21 +49,22 @@ class 던파스카우터프레임워크:
             pass
 
         elif(선택 == 'w'):
-            __비교캐릭터사전 = __캐릭터가져오기()
+           self. __기준캐릭터 = self.__캐릭터가져오기()
 
         else:
             print("설정되지 않은 입력입니다.")
 
 
     def __측정_캐릭터_가져오기(self):
-        self.__측정캐릭터사전 = self.__캐릭터가져오기()
+        self.__측정캐릭터 = self.__캐릭터가져오기()
 
     def __측정_캐릭터_설정하기(self):
         pass
 
     def __측정_캐릭터_출력하기(self):
-        if(__측정캐릭터사전 !=  None):
-            print("측정할 캐릭터의 정보 : " ,__측정캐릭터사전)
+        if(self.__측정캐릭터 !=  None):
+            #self.__측정캐릭터.출력()
+            print(self.__측정캐릭터)
 
     def __launcherFunction(self, menu):
         if menu == 'q':

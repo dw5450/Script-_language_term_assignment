@@ -1,5 +1,6 @@
 class 캐릭터정보 :
     def __init__(self):
+        self.__파싱한정보사전 = None
         self.__캐릭터이름 = ""
         self.__직업 = ""
         self.__힘 = 0
@@ -20,21 +21,19 @@ class 캐릭터정보 :
         self.__기준전투력정보 = 0
         self.__전투력 = 0
 
-    def 기준전투력정보설정(self, 기준전투력정보):
-        self.__기준전투력정보  = 기준전투력정보
+        def 전투력계산(self, 기준전투력정보):
+            전투력 = 0  # 추후에 c++에서 연동
+            return 전투력
 
-    def 캐릭터정보파싱(self, 캐릭터서버, 캐릭터아이디):
-        self.__전투력 = self.전투력계산(__기준전투력정보)
+    def 캐릭터정보설정하기(self, 캐릭터정보사전):
+        pass
+
+
+        self.__전투력 = self.전투력계산()
 
     def 캐릭터장비변경(self, 장비타입, 장비이름):
         self.__전투력 = self.전투력계산(기준전투력정보)
 
-    def 전투력계산(self, 기준전투력정보):
-        전투력  = 0
-        return 전투력
-
     def 출력(self):
         print("이름 : ", self.__캐릭터이름)
         print("직업 : ", self.__직업)
-        print("기준 : ")
-        print("전투력 : ", self.__전투력)

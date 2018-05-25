@@ -13,6 +13,7 @@ apikey = "9BdgXATgR7uy3XIzIaJPBHfECPoJGKlq"
 
 def 캐릭터정보불러오기(서버이름, 캐릭터이름):
     # myApiKey = "9BdgXATgR7uy3XIzIaJPBHfECPoJGKlq"
+
     서버아이디 = 게임서버사전[서버이름]
     캐릭터이름= urllib.parse.quote(캐릭터이름)
     던파API연결.request("GET", "https://api.neople.co.kr/df/servers/"+서버아이디+"/characters?characterName=" +캐릭터이름 + "&limit=<limit>&wordType=<wordType>&apikey=" + apikey) #서버에 GET 요청
