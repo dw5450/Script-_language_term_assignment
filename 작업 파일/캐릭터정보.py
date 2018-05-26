@@ -4,15 +4,15 @@ import spam
 
 class 캐릭터정보 :
     def __init__(self):
+        self.__캐릭터스탯사전 = None
         self.__캐릭터정보사전 = None
         self.__캐릭터이름 = ""
-        self.__직업 = ""
         self.__힘 = 0
         self.__지능 = 0
         self.__물리공격력 = 0
         self.__마법공격력 = 0
         self.__독립공격력 = 0
-        self.__크리티컬 = 0
+        self.__크리티컬 = 0 # 높은 크리티컬만 저장
         self.__속성강화 = 0#가장 강한 속성만들을 저장
 
         self.__힘_지능_증가 = 0
@@ -40,8 +40,6 @@ class 캐릭터정보 :
 
         else : return 0
 
-
-
     def __전투력계산(self):
         self.__전투력 = spam.CalPower(
         self.__힘_지능_증가,
@@ -53,8 +51,6 @@ class 캐릭터정보 :
         self.__추가데미지,
         self.__모든공격력증가,
         self.__스킬공격력증가)
-
-
 
 
     def __장비설명해석후적용(self, 장비설명):
@@ -95,9 +91,10 @@ class 캐릭터정보 :
             elif 설명단어리스트[i] == '지능':
                 self.__힘_지능_증가 = self.__힘_지능_증가  + self.__증가량해석(설명단어리스트[i + 1])
 
+    def 캐릭터장비사전저장하기(self, 캐릭터정보사전):
+        self.__캐릭터정보사전 = 캐릭터정보사전
 
-
-    def 캐릭터정보사전해석하기(self):
+    def 캐릭터장비사전적용하기(self):
         장비사전 = self.__캐릭터정보사전['equipment']
 
         for 장비정보 in 장비사전:
@@ -107,16 +104,42 @@ class 캐릭터정보 :
 
         self.__전투력계산()
 
-    def 캐릭터정보사전저장하기(self, 캐릭터정보사전):
-        self.__캐릭터정보사전 = 캐릭터정보사전
+    def 캐릭터스탯사전저장하기(self, 캐릭터스탯사전):
+        self.__캐릭터스탯사전 =  캐릭터스탯사전
+
+    def 캐릭터스탯사전적용하기(self):
+        self.__캐릭터이름 = self.__캐릭터스탯사전['characterName']
+        self.__직업 = self.__캐릭터스탯사전['jobGrowName']
+        self.__힘 = self.__캐릭터스탯사전['status'][2]['value']
+        self.__지능 = self.__캐릭터스탯사전['status'][3]['value']
+        self.__물리공격력 = self.__캐릭터스탯사전['status'][6]['value']
+        self.__마법공격력 = self.__캐릭터스탯사전['status'][7]['value']
+        self.__독립공격력 = self.__캐릭터스탯사전['status'][8]['value']
+
+        if(self.__캐릭터스탯사전['status'][11]['value'] < self.__캐릭터스탯사전['status'][12]['value']):
+            self.__크리티컬 = self.__캐릭터스탯사전['status'][12]['value']
+        else:
+            self.__크리티컬 = self.__캐릭터스탯사전['status'][11]['value']
+
+        self.__속성강화 = 0  # 가장 강한 속성만들을 저장
+
+        for i in range(0, 6, 2):
+            if(self.__속성강화 < self.__캐릭터스탯사전['status'][23 + i]['value']):
+                self.__속성강화 = self.__캐릭터스탯사전['status'][23 + i]['value']
 
 
-    def 캐릭터장비변경(self, 장비타입, 장비이름):
-        self.__전투력 = self.전투력계산()
+
 
     def 출력(self):
         print("이름 : ", self.__캐릭터이름)
         print("직업 : ", self.__직업)
+        print("힘 : ", self.__힘)
+        print("지능 :", self.__지능)
+        print("물리공격력", self.__물리공격력)
+        print("마법공격력", self.__마법공격력)
+        print("독립공격력", self.__독립공격력)
+        print("크리티컬", self.__크리티컬)
+        print("속성강화", self.__속성강화)
         print("스킬 : ", self.__스킬공격력증가)
         print("힘지증 : ", self.__힘_지능_증가)
         print("물마독 : ",self.__물리_마법_독립_공격력증가)
@@ -131,9 +154,11 @@ class 캐릭터정보 :
 
 
 
-dict = 캐릭터정보불러오기('카인', '비구름마녀')
-
-witch = 캐릭터정보()
-witch.캐릭터정보사전저장하기(dict)
-witch.캐릭터정보사전해석하기()
-witch.출력()
+비구름마녀  = 캐릭터정보()
+dict1 =  캐릭터장비사전불러오기('카인', '비구름마녀')
+비구름마녀.캐릭터장비사전저장하기(dict1)
+비구름마녀.캐릭터장비사전적용하기()
+dict2 =  캐릭터스탯사전불러오기('카인', '비구름마녀')
+비구름마녀.캐릭터스탯사전저장하기(dict2)
+비구름마녀.캐릭터스탯사전적용하기()
+비구름마녀.출력()
