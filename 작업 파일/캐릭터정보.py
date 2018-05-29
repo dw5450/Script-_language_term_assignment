@@ -6,7 +6,7 @@ class 캐릭터정보 :
     def __init__(self):
         self.__캐릭터스탯사전 = None
         self.__캐릭터정보사전 = None
-        self.__세트아이템리스트 = None
+        self.__나의세트아이템사전 = {}
 
         self.__캐릭터이름 = ""
         self.__캐릭터타입 = None
@@ -125,6 +125,12 @@ class 캐릭터정보 :
 
         for 장비정보 in 장비사전:
             장비아이디 = 장비정보['itemId']
+            if 'setItemName' in 장비정보.keys():
+                if 장비정보['setItemName'] in self.__나의세트아이템사전.keys():
+                    self.__나의세트아이템사전[장비정보['setItemName']]['num'] += 1
+
+                else : self.__나의세트아이템사전[장비정보['setItemName']] =  {type : str(장비정보['itemAvailableLevel']) + '제' + 장비정보['itemType'], 'num' : 1}
+
             장비설명=장비설명불러오기(장비아이디)
             self.__장비설명해석후적용(장비설명)
 
@@ -179,6 +185,7 @@ class 캐릭터정보 :
         print("추뎀",self.__추가데미지)
         print("모공",self.__모든공격력증가)
         print("전투력",self.__전투력)
+        print(self.__나의세트아이템사전)
 
 
 마녀 =  캐릭터정보()
