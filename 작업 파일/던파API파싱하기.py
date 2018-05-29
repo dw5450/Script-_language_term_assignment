@@ -14,8 +14,7 @@ apikey = "9BdgXATgR7uy3XIzIaJPBHfECPoJGKlq"
 def 캐릭터연결확인하기(서버이름, 캐릭터이름):
     서버아이디 = 게임서버사전[서버이름]
     캐릭터이름 = urllib.parse.quote(캐릭터이름)
-    던파API연결.request("GET",
-                    "https://api.neople.co.kr/df/servers/" + 서버아이디 + "/characters?characterName=" + 캐릭터이름 + "&limit=<limit>&wordType=<wordType>&apikey=" + apikey)  # 서버에 GET 요청
+    던파API연결.request("GET", "https://api.neople.co.kr/df/servers/" + 서버아이디 + "/characters?characterName=" + 캐릭터이름 + "&limit=<limit>&wordType=<wordType>&apikey=" + apikey)  # 서버에 GET 요청
     req = 던파API연결.getresponse()  # openAPI 서버에서 보내온 요청을 받아옴
     # print(req.status, req.reason)
     if (req.status == 200):
@@ -44,7 +43,15 @@ def 캐릭터장비사전불러오기(서버이름, 캐릭터이름):
         data = req.read(int(cLen))
         dict = json.loads(data)
 
-        return dict
+        던파API연결.request("GET",
+                        "https://api.neople.co.kr/df/servers/" + 서버아이디 + "/characters/" + 캐릭터아이디 + "/equip/creature?apikey=" + apikey)  # 서버에 GET 요청
+        req = 던파API연결.getresponse()  # openAPI 서버에서 보내온 요청을 받아옴
+        cLen = req.getheader("Content-Length")  # 가져온 데이터 길이
+        data = req.read(int(cLen))
+        크리처정보사전 = json.loads(data)
+
+        dict['equipment'].append(크리처정보사전['creature'])
+        return dict['equipment']
 
     else : return False
 
@@ -69,18 +76,14 @@ def 캐릭터스탯사전불러오기(서버이름, 캐릭터이름):
         cLen = req.getheader("Content-Length") 	#가져온 데이터 길이
         data = req.read(int(cLen))
         dict = json.loads(data)
-
         return dict
-
-
 
     else : return False
 
 
 
 def 장비설명불러오기(장비아이디):
-    던파API연결.request("GET",
-                    "https://api.neople.co.kr/df/items/" + 장비아이디 + "?apikey=" + apikey)  # 서버에 GET 요청
+    던파API연결.request("GET", "https://api.neople.co.kr/df/items/" + 장비아이디 + "?apikey=" + apikey)  # 서버에 GET 요청
     req = 던파API연결.getresponse()
     cLen = req.getheader("Content-Length")  # 가져온 데이터 길이
     data = req.read(int(cLen))

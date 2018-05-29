@@ -5,7 +5,7 @@ import spam
 class 캐릭터정보 :
     def __init__(self):
         self.__캐릭터스탯사전 = None
-        self.__캐릭터정보사전 = None
+        self.__캐릭터장비사전 = None
         self.__나의세트아이템사전 = {}
 
         self.__캐릭터이름 = ""
@@ -117,13 +117,12 @@ class 캐릭터정보 :
                 self.__힘_지능_증가 = self.__힘_지능_증가  + self.__증가량해석(설명단어리스트[i + 1])
 
 
-    def 캐릭터장비사전저장하기(self, 캐릭터정보사전):
-        self.__캐릭터정보사전 = 캐릭터정보사전
+    def 캐릭터장비사전저장하기(self, 캐릭터장비사전):
+        self.__캐릭터장비사전 = 캐릭터장비사전
 
     def 캐릭터장비사전적용하기(self):
-        장비사전 = self.__캐릭터정보사전['equipment']
 
-        for 장비정보 in 장비사전:
+        for 장비정보 in self.__캐릭터장비사전:
             장비아이디 = 장비정보['itemId']
             if 'setItemName' in 장비정보.keys():
                 if 장비정보['setItemName'] in self.__나의세트아이템사전.keys():
