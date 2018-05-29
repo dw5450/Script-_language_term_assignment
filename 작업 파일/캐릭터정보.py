@@ -6,6 +6,8 @@ class 캐릭터정보 :
     def __init__(self):
         self.__캐릭터스탯사전 = None
         self.__캐릭터정보사전 = None
+        self.__세트아이템리스트 = None
+
         self.__캐릭터이름 = ""
         self.__캐릭터타입 = None
         self.__직업 = None
