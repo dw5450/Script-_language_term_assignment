@@ -51,14 +51,19 @@ def 캐릭터장비사전불러오기(서버이름, 캐릭터이름):
         크리처정보사전 = json.loads(data)
 
         dict['equipment'].append(크리처정보사전['creature'])
+        req.close()
+        던파API연결.close()
         return dict['equipment']
 
-    else : return False
+
+    else :
+        req.close()
+        던파API연결.close()
+        return False
 
 
 def 캐릭터스탯사전불러오기(서버이름, 캐릭터이름):
     # myApiKey = "9BdgXATgR7uy3XIzIaJPBHfECPoJGKlq"
-
     서버아이디 = 게임서버사전[서버이름]
     캐릭터이름= urllib.parse.quote(캐릭터이름)
     던파API연결.request("GET", "https://api.neople.co.kr/df/servers/"+서버아이디+"/characters?characterName=" +캐릭터이름 + "&limit=<limit>&wordType=<wordType>&apikey=" + apikey) #서버에 GET 요청
@@ -76,9 +81,14 @@ def 캐릭터스탯사전불러오기(서버이름, 캐릭터이름):
         cLen = req.getheader("Content-Length") 	#가져온 데이터 길이
         data = req.read(int(cLen))
         dict = json.loads(data)
+        req.close()
+        던파API연결.close()
         return dict
 
-    else : return False
+    else :
+        req.close()
+        던파API연결.close()
+        return False
 
 
 
@@ -88,4 +98,6 @@ def 장비설명불러오기(장비아이디):
     cLen = req.getheader("Content-Length")  # 가져온 데이터 길이
     data = req.read(int(cLen))
     dict = json.loads(data)
+    req.close()
+    던파API연결.close()
     return dict['itemExplain']

@@ -8,9 +8,9 @@ class 캐릭터정보 :
         self.__캐릭터장비사전 = None
         self.__나의세트아이템사전 = {}
 
-        self.__캐릭터이름 = ""
+        self.캐릭터이름 = ""
         self.__캐릭터타입 = None
-        self.__직업 = None
+        self.직업 = None
         self.__힘 = 0
         self.__지능 = 0
         self.__물리공격력 = 0
@@ -43,6 +43,9 @@ class 캐릭터정보 :
 
         return result
 
+    def 전투력가져오기(self):
+        return self.__전투력
+
 
     def 전투력계산(self, 공격력적용방식):
         힘or지능 = 0
@@ -62,12 +65,11 @@ class 캐릭터정보 :
             힘or지능 = self.__지능
             공격력 = self.__마법공격력
 
-        print(공격력)
 
         self.__전투력 = spam.CalPower(
             힘or지능,
             공격력,
-            97,#self.__크리티컬,
+            self.__크리티컬,
             self.__속성강화,
             self.__힘_지능_증가,
             self.__물리_마법_독립_공격력증가,
@@ -82,7 +84,35 @@ class 캐릭터정보 :
             self.__방어력감소
         )
 
+    def __초기화(self):
+        self.__캐릭터스탯사전 = None
+        self.__캐릭터장비사전 = None
+        self.__나의세트아이템사전 = {}
 
+        self.캐릭터이름 = ""
+        self.__캐릭터타입 = None
+        self.직업 = None
+        self.__힘 = 0
+        self.__지능 = 0
+        self.__물리공격력 = 0
+        self.__마법공격력 = 0
+        self.__독립공격력 = 0
+        self.__크리티컬 = 0  # 높은 크리티컬만 저장
+        self.__속성강화 = 0  # 가장 강한 속성만들을 저장
+
+        self.__힘_지능_증가 = 0
+        self.__물리_마법_독립_공격력증가 = 0
+        self.__증가데미지 = 0
+        self.__추가증가데미지 = 0
+        self.__크리티컬증가데미지 = 0
+        self.__추가크리티컬증가데미지 = 0
+        self.__추가데미지 = 0
+        self.__속성추가데미지 = 0
+        self.__모든공격력증가 = 0
+        self.__스킬공격력증가 = 0
+        self.__방어력감소 = 0
+        self.__전투력 = 0
+        
     def __장비설명해석후적용(self, 장비설명):
         설명단어리스트 = 장비설명.split()
 
@@ -166,8 +196,8 @@ class 캐릭터정보 :
         self.__캐릭터스탯사전 =  캐릭터스탯사전
 
     def 캐릭터스탯사전적용하기(self):
-        self.__캐릭터이름 = self.__캐릭터스탯사전['characterName']
-        self.__직업 = self.__캐릭터스탯사전['jobGrowName']
+        self.캐릭터이름 = self.__캐릭터스탯사전['characterName']
+        self.직업 = self.__캐릭터스탯사전['jobGrowName']
         self.__힘 = self.__캐릭터스탯사전['status'][2]['value']
         self.__지능 = self.__캐릭터스탯사전['status'][3]['value']
         self.__물리공격력 = self.__캐릭터스탯사전['status'][6]['value']
@@ -186,6 +216,7 @@ class 캐릭터정보 :
                 self.__속성강화 = self.__캐릭터스탯사전['status'][23 + i]['value']
 
     def 캐릭터가져오기(self, 서버, 이름, 공격타입):
+        self.__초기화()
         self.캐릭터장비사전저장하기(캐릭터장비사전불러오기(서버, 이름))
         self.캐릭터장비사전적용하기()
         self.캐릭터스탯사전저장하기(캐릭터스탯사전불러오기(서버, 이름))
@@ -194,8 +225,8 @@ class 캐릭터정보 :
 
 
     def 출력(self):
-        print("이름 : ", self.__캐릭터이름)
-        print("직업 : ", self.__직업)
+        print("이름 : ", self.캐릭터이름)
+        print("직업 : ", self.직업)
         print("힘 : ", self.__힘)
         print("지능 :", self.__지능)
         print("물리공격력", self.__물리공격력)
@@ -214,11 +245,4 @@ class 캐릭터정보 :
         print("속성추가데미지", self.__속성추가데미지)
         print("모공",self.__모든공격력증가)
         print("전투력",self.__전투력)
-        print(self.__캐릭터장비사전)
-
-
-캐릭터 =  캐릭터정보()
-캐릭터.캐릭터가져오기('카인','비구름마녀', '독립공격력')
-캐릭터.출력()
-
 

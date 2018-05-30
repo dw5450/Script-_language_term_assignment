@@ -1,89 +1,170 @@
 from 던파API파싱하기 import *
 from 캐릭터정보 import *
 
+from tkinter import *
+from tkinter import font
+import tkinter.messagebox
+
+
 class 던파스카우터프레임워크:
     def __init__(self):
+
+        self.g_Tk = Tk()
+        self.g_Tk.geometry("400x600+750+200")
+        DataList = []
+
         self.__loopFlag = True
         self.__xmlFD = -1
-        self.__기준캐릭터_퀘전 = None
-        self.__기준캐릭터_노오력 = None
-        self.__기준캐릭터_모인물 = None
+        self.__고인물전투력 = {'독립공격력' : 762652.38, "물리,마법공격력" : 7623841.0}
+        self.__노오력전투력 = {'독립공격력': 146841.49, "물리,마법공격력": 1466123.27}
+        self.__퀘전전투력 = {'독립공격력': 20583.06, "물리,마법공격력": 206496.24}
+        self.__출력타입 = '독립공격력'
+        self.__찾는서버 = None
+        self.__찾는이름 = None
         self.__기준캐릭터 = None
-        self.__측정캐릭터 = None
+        self.__측정캐릭터 = 캐릭터정보()
 
-    def __캐릭터가져오기(self):
-        임시캐릭터 = 캐릭터정보()
-        서버이름 = input("가져오실 캐릭터의 서버를 입력해주세요 : ")
-        캐릭터이름 = input("가져오실 캐릭터의 이름을 입력해주세요 : ")
-        공격타입 = input("가져오실 캐릭터의 공격타입를 입력해주세요 : ")
-        임시캐릭터.캐릭터가져오기(서버이름, 캐릭터이름, 공격타입)
+    def SearchButtonAction(self):
+        global SearchListBox
+        global InputLabel
+        global RenderText
+        RenderText.configure(state='normal')
+        RenderText.delete(0.0, END)
+        iSearchIndex = SearchListBox.yview()[0]
+        if(iSearchIndex == 0):
+            self.__찾는서버 = '카인'
+        elif (iSearchIndex == 1):
+            self.__찾는서버 = '디레지에'
+        elif (iSearchIndex == 2):
+            self.__찾는서버 = '시로코'
+        elif (iSearchIndex == 3):
+            self.__찾는서버 = '프레이'
+        elif (iSearchIndex == 4):
+            self.__찾는서버 = '카시야스'
+        elif (iSearchIndex == 5):
+            self.__찾는서버 = '힐더'
+        elif (iSearchIndex == 6):
+            self.__찾는서버 = '안톤'
+        elif (iSearchIndex == 7):
+            self.__찾는서버 = '바칼'
 
-        return 임시캐릭터
+        찾는이름 = InputLabel.get()
+        공격유형 = '독립공격력'
 
-    def __printMenu(self):
-        print("     던파 스카우터!     ")
-        print("========Menu==========")
-        print("기준 캐릭터 설정하기 : q")
-        print("측정 캐릭터 가져오기 : w")
-        print("측정 캐릭터 설정하기 : e")
-        print("측정 캐릭터 출력하기 : r")
-        print("     종료하기      : z")
-        print("======================")
+        if 찾는이름 != self.__찾는이름:
+            self.__찾는이름 = 찾는이름
+            self.__측정캐릭터.캐릭터가져오기(self.__찾는서버 , 찾는이름, 공격유형)
+            RenderText.insert(INSERT, "\n")
+            RenderText.insert(INSERT, "캐릭터이름 : ")
+            RenderText.insert(INSERT, self.__측정캐릭터.캐릭터이름)
+            RenderText.insert(INSERT, "\n")
+            RenderText.insert(INSERT, "\n")
+            if(self.__출력타입 == '독립공격력'):
+                RenderText.insert(INSERT, int(self.__측정캐릭터.전투력가져오기()/self.__고인물전투력['독립공격력'] * 100)/100)
+                RenderText.insert(INSERT, " 고인물 ")
+                RenderText.insert(INSERT, "\n")
+                RenderText.insert(INSERT, "\n")
+                RenderText.insert(INSERT, int(self.__측정캐릭터.전투력가져오기()/self.__노오력전투력['독립공격력'] * 100)/100)
+                RenderText.insert(INSERT, " 노오력")
+                RenderText.insert(INSERT, "\n")
+                RenderText.insert(INSERT, "\n")
+                RenderText.insert(INSERT, int(self.__측정캐릭터.전투력가져오기() / self.__퀘전전투력['독립공격력'] * 100)/100)
+                RenderText.insert(INSERT, " 퀘전")
+                RenderText.insert(INSERT, "\n")
+                RenderText.insert(INSERT, "\n")
+            else:
+                RenderText.insert(INSERT, int(self.__측정캐릭터.전투력가져오기() / self.__고인물전투력['물리,마법공격력'] * 100) / 100)
+                RenderText.insert(INSERT, " 고인물 ")
+                RenderText.insert(INSERT, "\n")
+                RenderText.insert(INSERT, "\n")
+                RenderText.insert(INSERT, int(self.__측정캐릭터.전투력가져오기() / self.__노오력전투력['물리,마법공격력'] * 100) / 100)
+                RenderText.insert(INSERT, " 노오력")
+                RenderText.insert(INSERT, "\n")
+                RenderText.insert(INSERT, "\n")
+                RenderText.insert(INSERT, int(self.__측정캐릭터.전투력가져오기() / self.__퀘전전투력['물리,마법공격력'] * 100) / 100)
+                RenderText.insert(INSERT, " 퀘전")
+                RenderText.insert(INSERT, "\n")
+                RenderText.insert(INSERT, "\n")
 
 
-    def __기준_캐릭터_설정하기(self):
-        print("어떤 설정을 이용하실 건가요?")
-        print("설정 캐릭터 사용하기 : q")
-        print("서버에서 불러오기 : w")
+    ## GUI의 제목을 탑에다 적자
+    def InitTopText(self):
+        TempFont = font.Font(self.g_Tk, size=20, weight='bold', family='Consolas')
+        MainText = Label(self.g_Tk, font=TempFont, text="[던파스카우터!]")
+        MainText.pack()
+        MainText.place(x=100, y=30)
 
-        선택 = str(input ('선택하기   :  '))
+    def InitSearchListBox(self):
+        global SearchListBox
+        TempFont = font.Font(self.g_Tk, size=15, weight='bold', family='Consolas')
+        MainText = Label(self.g_Tk, font=TempFont, text="서버 ")
+        MainText.pack()
+        MainText.place(x=10, y=100)
 
-        if(선택 =='q'):
-            print("어떤 설정을 이용하실 건가요?")
-            print("1. 퀘전  2. 노오오력  3. 모인물")
-            선택 = str(input('선택하기   :  '))
-            pass
+        ListBoxScrollbar = Scrollbar(self.g_Tk)
+        ListBoxScrollbar.pack()
+        ListBoxScrollbar.place(x=210, y=90)
+        SearchListBox = Listbox(self.g_Tk, font=TempFont, activestyle='none',
+                                width=10, height=1, borderwidth=12, relief='ridge',
+                                yscrollcommand=ListBoxScrollbar.set)
 
-        elif(선택 == 'w'):
-           self. __기준캐릭터 = self.__캐릭터가져오기()
+        SearchListBox.insert(1, "카인")
+        SearchListBox.insert(2, "디레지에")
+        SearchListBox.insert(3, "시로코")
+        SearchListBox.insert(4, "프레이")
+        SearchListBox.insert(5, "카시야스")
+        SearchListBox.insert(6, "힐더")
+        SearchListBox.insert(7, "안톤")
+        SearchListBox.insert(8, "바칼")
+        SearchListBox.pack()
+        SearchListBox.place(x=70, y=90)
+        ListBoxScrollbar.config(command=SearchListBox.yview)
 
-        else:
-            print("설정되지 않은 입력입니다.")
+    def InitInputLabel(self):
+        global InputLabel
+        TempFont = font.Font(self.g_Tk, size=15, weight='bold', family='Consolas')
+        MainText = Label(self.g_Tk, font=TempFont, text="이름 ")
+        MainText.pack()
+        MainText.place(x=10, y=155)
 
+        InputLabel = Entry(self.g_Tk, font=TempFont, width=15, borderwidth=12, relief='ridge')
+        InputLabel.pack()
+        InputLabel.place(x=70, y=145)
 
-    def __측정_캐릭터_가져오기(self):
-        self.__측정캐릭터 = self.__캐릭터가져오기()
+    def InitSearchButton(self):
+        TempFont = font.Font(self.g_Tk, size=12, weight='bold', family='Consolas')
+        SearchButton = Button(self.g_Tk, font=TempFont, text="검색", command=self.SearchButtonAction)
+        SearchButton.pack()
+        SearchButton.place(x=330, y=100)
+
+    def InitRenderText(self):
+        global RenderText
+
+        RenderTextScrollbar = Scrollbar(self.g_Tk)
+        RenderTextScrollbar.pack()
+        RenderTextScrollbar.place(x=375, y=220)
+
+        TempFont = font.Font(self.g_Tk, size=10, family='Consolas')
+        RenderText = Text(self.g_Tk, width=49, height=23, borderwidth=12,
+                          relief='ridge', yscrollcommand=RenderTextScrollbar.set)
+        RenderText.pack()
+        RenderText.place(x=10, y=235)
+        RenderTextScrollbar.config(command=RenderText.yview)
+        RenderTextScrollbar.pack(side=RIGHT, fill=BOTH)
+
+        RenderText.configure(state='disabled')
 
     def __측정_캐릭터_설정하기(self):
         pass
 
-    def __측정_캐릭터_출력하기(self):
-        if(self.__측정캐릭터 !=  None or self.__측정캐릭터 != False):
-            self.__측정캐릭터.출력()
-
-    def __launcherFunction(self, menu):
-        if menu == 'q':
-            self.__기준_캐릭터_설정하기()
-        elif menu == 'w':
-            self.__측정_캐릭터_가져오기()
-        elif menu == 'e':
-            self.__측정_캐릭터_설정하기()
-        elif menu == 'r':
-            self.__측정_캐릭터_출력하기()
-        elif menu == 'z':
-            self.__loopFlag = False #종료하기
-        else:
-            print("error : 설정 된 키값이 아닙니다. capslock이나 한글 설정을 확인해주세요.")
-
 
     def 실행하기(self):
-        while(self.__loopFlag > 0):
-            self.__printMenu()
-            menuKey = str(input ('메뉴 선택하기   :  '))
-            self.__launcherFunction(menuKey)
-        else:
-            print ("프로그램을 이용해 주셔서 감사합니다.")
-
+        self.InitTopText()
+        self.InitSearchListBox()
+        self.InitInputLabel()
+        self.InitSearchButton()
+        self.InitRenderText()
+        self.g_Tk.mainloop()
 
 
 fw = 던파스카우터프레임워크()
