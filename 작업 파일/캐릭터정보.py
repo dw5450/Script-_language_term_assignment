@@ -35,16 +35,14 @@ class 캐릭터정보 :
     def __증가량해석(self, 증가량):
         l = list(증가량)
         result = 0
-        if '0' <= l[0] <= '9':
-            for data in l:
-                if (data == '%'):
-                    break
-                else:
-                    result = result * 10 + int(data)
+        for data in l:
+            if '0' <= data <= '9':
+                result = result * 10 + int(data)
 
-            return result
+            else : break
 
-        else : return 0
+        return result
+
 
     def 전투력계산(self, 공격력적용방식):
         힘or지능 = 0
@@ -69,7 +67,7 @@ class 캐릭터정보 :
         self.__전투력 = spam.CalPower(
             힘or지능,
             공격력,
-            self.__크리티컬,
+            97,#self.__크리티컬,
             self.__속성강화,
             self.__힘_지능_증가,
             self.__물리_마법_독립_공격력증가,
@@ -216,11 +214,11 @@ class 캐릭터정보 :
         print("속성추가데미지", self.__속성추가데미지)
         print("모공",self.__모든공격력증가)
         print("전투력",self.__전투력)
-        #print(self.__나의세트아이템사전)
+        print(self.__캐릭터장비사전)
 
 
-마녀 =  캐릭터정보()
-마녀.캐릭터가져오기('카인','비구름마녀','물리공격력')
-마녀.출력()
+캐릭터 =  캐릭터정보()
+캐릭터.캐릭터가져오기('카인','비구름마녀', '독립공격력')
+캐릭터.출력()
 
 
