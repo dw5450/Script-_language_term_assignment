@@ -1,6 +1,6 @@
 from 던파API파싱하기 import *
 import spam
-
+from 세트아이템사전 import *
 
 class 캐릭터정보 :
     def __init__(self):
@@ -29,6 +29,7 @@ class 캐릭터정보 :
         self.__속성추가데미지 = 0
         self.__모든공격력증가 = 0
         self.__스킬공격력증가 = 0
+        self.__방어력감소 = 0
         self.__전투력 = 0
 
     def __증가량해석(self, 증가량):
@@ -72,7 +73,9 @@ class 캐릭터정보 :
             self.__추가데미지,
             self.__속성추가데미지,
             self.__모든공격력증가,
-            self.__스킬공격력증가)
+            self.__스킬공격력증가,
+            self.__방어력감소
+        )
 
 
     def __장비설명해석후적용(self, 장비설명):
@@ -116,22 +119,43 @@ class 캐릭터정보 :
             elif 설명단어리스트[i] == '지능':
                 self.__힘_지능_증가 = self.__힘_지능_증가  + self.__증가량해석(설명단어리스트[i + 1])
 
+            elif 설명단어리스트[i]  =='방어력':
+                self.__방어력감소 = self.__증가량해석(설명단어리스트[i+1])
+
 
     def 캐릭터장비사전저장하기(self, 캐릭터장비사전):
         self.__캐릭터장비사전 = 캐릭터장비사전
 
     def 캐릭터장비사전적용하기(self):
-
         for 장비정보 in self.__캐릭터장비사전:
             장비아이디 = 장비정보['itemId']
             if 'setItemName' in 장비정보.keys():
                 if 장비정보['setItemName'] in self.__나의세트아이템사전.keys():
                     self.__나의세트아이템사전[장비정보['setItemName']]['num'] += 1
 
-                else : self.__나의세트아이템사전[장비정보['setItemName']] =  {type : str(장비정보['itemAvailableLevel']) + '제' + 장비정보['itemType'], 'num' : 1}
-
+                else : self.__나의세트아이템사전[장비정보['setItemName']] =  {'level': 장비정보['itemAvailableLevel'], 'type' : 장비정보['itemType'], 'num' : 1}
             장비설명=장비설명불러오기(장비아이디)
             self.__장비설명해석후적용(장비설명)
+
+        for key  in self.__나의세트아이템사전.keys():
+            if  self.__나의세트아이템사전[key]['type'] == '방어구':
+                if self.__나의세트아이템사전[key]['num'] == 5:
+                    if key in 세트아이템_5.keys():
+                        self.__장비설명해석후적용(세트아이템_5[key])
+
+                if self.__나의세트아이템사전[key]['level'] == 90 and self.__나의세트아이템사전[key]['num'] > 2:
+                    if key in 세트아이템_3.keys():
+                        self.__장비설명해석후적용(세트아이템_5[key])
+            else:
+                if key == '바이라바의 계승자' and self.__나의세트아이템사전[key]['num'] > 1:
+                    if key in 세트아이템_2.keys():
+                        self.__장비설명해석후적용(세트아이템_2[key])
+
+                if self.__나의세트아이템사전[key]['num'] > 2:
+                    if key in 세트아이템_3.keys():
+                        self.__장비설명해석후적용(세트아이템_3[key])
+
+
 
     def 캐릭터스탯사전저장하기(self, 캐릭터스탯사전):
         self.__캐릭터스탯사전 =  캐릭터스탯사전
@@ -184,7 +208,7 @@ class 캐릭터정보 :
         print("추뎀",self.__추가데미지)
         print("모공",self.__모든공격력증가)
         print("전투력",self.__전투력)
-        print(self.__나의세트아이템사전)
+        #print(self.__나의세트아이템사전)
 
 
 마녀 =  캐릭터정보()
