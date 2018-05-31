@@ -10,8 +10,11 @@ class 던파스카우터프레임워크:
     def __init__(self):
 
         self.g_Tk = Tk()
-        self.g_Tk.geometry("400x600+750+200")
-        DataList = []
+        self.g_Tk.geometry("250x200+550+100")
+        self.AppState = '기본' #'기본캐릭터불러오기' # '측정캐릭터불러오기' # '측정캐릭아이템변경 #측정캐릭터측정하기
+
+        self.기준캐릭터불러오기_Tk = None
+
 
         self.__loopFlag = True
         self.__xmlFD = -1
@@ -90,11 +93,54 @@ class 던파스카우터프레임워크:
 
 
     ## GUI의 제목을 탑에다 적자
-    def InitTopText(self):
+    def RootAppTopText(self):
         TempFont = font.Font(self.g_Tk, size=20, weight='bold', family='Consolas')
         MainText = Label(self.g_Tk, font=TempFont, text="[던파스카우터!]")
         MainText.pack()
-        MainText.place(x=100, y=30)
+        #MainText.place(x=100, y=30)
+
+    def RootAppButton(self):
+        TempFont = font.Font(self.g_Tk, size=14, weight='bold', family='Consolas')
+
+        def 앱상태기준캐릭터불러오기():
+            self.AppState = '기준캐릭터불러오기'
+            if self.AppState == '기준캐릭터불러오기':
+                print("기준캐릭터불러오기")
+                if self.기준캐릭터불러오기_Tk != None:
+                    self.기준캐릭터불러오기_Tk.destroy()
+
+                self.기준캐릭터불러오기_Tk = Tk()
+                self.기준캐릭터불러오기_Tk.geometry("250x200+800+100")
+                self.기준캐릭터불러오기_Tk.mainloop()
+
+        기준캐릭터불러오기버튼 = Button(self.g_Tk, font=TempFont, text="기준 캐릭터 불러오기", command=앱상태기준캐릭터불러오기)
+        기준캐릭터불러오기버튼.pack()
+        # 기준캐릭터불러오기버튼.place(x=100, y=100)
+
+        TempFont = font.Font(self.g_Tk, size=14, weight='bold', family='Consolas')
+
+        def 앱상태측정캐릭터불러오기(): self.AppState = '측정캐릭터불러오기'
+
+        측정캐릭터불러오기버튼 = Button(self.g_Tk, font=TempFont, text="측정 캐릭터 불러오기", command=앱상태측정캐릭터불러오기)
+        측정캐릭터불러오기버튼.pack()
+        # 측정캐릭터불러오기버튼.place(x=100, y=140)
+
+        TempFont = font.Font(self.g_Tk, size=14, weight='bold', family='Consolas')
+
+        def 앱상태측정캐릭터아이템변경(): self.AppState = '측정캐릭터아이템변경'
+
+        측정캐릭터아이템변경버튼 = Button(self.g_Tk, font=TempFont, text="측정 캐릭 아이템변경", command=앱상태측정캐릭터아이템변경)
+        측정캐릭터아이템변경버튼.pack()
+        # 측정캐릭터아이템변경버튼.place(x=100, y=180)
+
+        TempFont = font.Font(self.g_Tk, size=14, weight='bold', family='Consolas')
+
+        def 앱상태측정캐릭터측정하기(): self.AppState = '측정캐릭터측정하기'
+
+        측정캐릭터아이템변경버튼 = Button(self.g_Tk, font=TempFont, text="측정 캐릭터 측정하기", command=앱상태측정캐릭터측정하기)
+        측정캐릭터아이템변경버튼.pack()
+
+        # 측정캐릭터아이템변경버튼.place(x=100, y=220)
 
     def InitSearchListBox(self):
         global SearchListBox
@@ -142,17 +188,17 @@ class 던파스카우터프레임워크:
     def InitRenderText(self):
         global RenderText
 
-        RenderTextScrollbar = Scrollbar(self.g_Tk)
-        RenderTextScrollbar.pack()
-        RenderTextScrollbar.place(x=375, y=220)
+        #RenderTextScrollbar = Scrollbar(self.g_Tk)
+        #RenderTextScrollbar.pack()
+        #RenderTextScrollbar.place(x=375, y=220)
 
         TempFont = font.Font(self.g_Tk, size=10, family='Consolas')
         RenderText = Text(self.g_Tk, width=49, height=23, borderwidth=12,
-                          relief='ridge', yscrollcommand=RenderTextScrollbar.set)
+                          relief='ridge') #yscrollcommand=RenderTextScrollbar.set)
         RenderText.pack()
         RenderText.place(x=10, y=235)
-        RenderTextScrollbar.config(command=RenderText.yview)
-        RenderTextScrollbar.pack(side=RIGHT, fill=BOTH)
+        #RenderTextScrollbar.config(command=RenderText.yview)
+        #RenderTextScrollbar.pack(side=RIGHT, fill=BOTH)
 
         RenderText.configure(state='disabled')
 
@@ -161,11 +207,11 @@ class 던파스카우터프레임워크:
 
 
     def 실행하기(self):
-        self.InitTopText()
-        self.InitSearchListBox()
-        self.InitInputLabel()
-        self.InitSearchButton()
-        self.InitRenderText()
+        self.RootAppTopText()
+        self.RootAppButton()
+
+
+
         self.g_Tk.mainloop()
 
 
