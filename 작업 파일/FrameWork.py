@@ -31,6 +31,8 @@ class 던파스카우터프레임워크:
         RenderText.configure(state='normal')
         RenderText.delete(0.0, END)
         iSearchIndex = SearchListBox.yview()[0]
+        iSearchIndex = int(iSearchIndex * 8)
+        print(iSearchIndex)
         if(iSearchIndex == 0):
             self.__찾는서버 = '카인'
         elif (iSearchIndex == 1):
