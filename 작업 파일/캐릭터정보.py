@@ -66,7 +66,7 @@ class 캐릭터정보 :
             공격력 = self.__마법공격력
 
 
-        self.__전투력 = spam.CalPower(
+        전투력 = spam.CalPower(
             힘or지능,
             공격력,
             self.__크리티컬,
@@ -83,6 +83,7 @@ class 캐릭터정보 :
             self.__스킬공격력증가,
             self.__방어력감소
         )
+        return 전투력
 
     def __초기화(self):
         self.__캐릭터스탯사전 = None
@@ -111,7 +112,6 @@ class 캐릭터정보 :
         self.__모든공격력증가 = 0
         self.__스킬공격력증가 = 0
         self.__방어력감소 = 0
-        self.__전투력 = 0
         
     def __장비설명해석후적용(self, 장비설명):
         설명단어리스트 = 장비설명.split()
