@@ -1,32 +1,13 @@
 from 던파API파싱하기 import *
 from 캐릭터정보 import *
-
-from tkinter import *
-from tkinter import font
-import tkinter.messagebox
-
-def getViewport(width, height,x , y):
-
-    viewport = str(width) + "x" + str(height) + "+" + str(x) + "+" + str(y)
-
-    return viewport
+from myTk import *
 
 class 던파스카우터프레임워크:
     def __init__(self):
-
-        
-        self.메뉴_Tk = Tk()
-        self.root_Tk_x = 600
-        self.root_Tk_y = 200
-        self.root_Tk_width = 205
-        self.root_Tk_height = 200
-        self.메뉴_Tk.geometry(getViewport(self.root_Tk_width, self.root_Tk_height, self.root_Tk_x, self.root_Tk_y))
-        self.drawedTk = self.메뉴_Tk
-
+        self.Tk_Position = {'x' : 600, 'y' : 150}
         self.AppState = '메뉴' #'기본캐릭터불러오기' # '측정캐릭터불러오기' # '측정캐릭아이템변경 #측정캐릭터측정하기
-
-        self.기준캐릭터불러오기_Tk = None
-
+        self.Scene = None
+        self.메뉴Tk()
 
         self.__loopFlag = True
         self.__xmlFD = -1
@@ -39,195 +20,133 @@ class 던파스카우터프레임워크:
         self.__기준캐릭터 = None
         self.__측정캐릭터 = 캐릭터정보()
 
-    def SearchButtonAction(self):
-        global SearchListBox
-        global InputLabel
-        global RenderText
-        RenderText.configure(state='normal')
-        RenderText.delete(0.0, END)
-        iSearchIndex = SearchListBox.yview()[0]
-        iSearchIndex = int(iSearchIndex * 8)
-        print(iSearchIndex)
-        if(iSearchIndex == 0):
-            self.__찾는서버 = '카인'
-        elif (iSearchIndex == 1):
-            self.__찾는서버 = '디레지에'
-        elif (iSearchIndex == 2):
-            self.__찾는서버 = '시로코'
-        elif (iSearchIndex == 3):
-            self.__찾는서버 = '프레이'
-        elif (iSearchIndex == 4):
-            self.__찾는서버 = '카시야스'
-        elif (iSearchIndex == 5):
-            self.__찾는서버 = '힐더'
-        elif (iSearchIndex == 6):
-            self.__찾는서버 = '안톤'
-        elif (iSearchIndex == 7):
-            self.__찾는서버 = '바칼'
+    def 캐릭터불러오기(self):
+        캐릭터불러오기_Tk = Tk()
+        캐릭터불러오기_Tk.geometry(Tk크기설명(400, 210, self.Tk_Position['x'] - 100, self.Tk_Position['y']))
 
-        찾는이름 = InputLabel.get()
-        공격유형 = '독립공격력'
+        불러오는캐릭터타입 = None
+        불러온캐릭터 = None
 
-        if 찾는이름 != self.__찾는이름:
-            self.__찾는이름 = 찾는이름
-            self.__측정캐릭터.캐릭터가져오기(self.__찾는서버 , 찾는이름, 공격유형)
-            RenderText.insert(INSERT, "\n")
-            RenderText.insert(INSERT, "캐릭터이름 : ")
-            RenderText.insert(INSERT, self.__측정캐릭터.캐릭터이름)
-            RenderText.insert(INSERT, "\n")
-            RenderText.insert(INSERT, "\n")
-            if(self.__출력타입 == '독립공격력'):
-                RenderText.insert(INSERT, int(self.__측정캐릭터.전투력가져오기()/self.__고인물전투력['독립공격력'] * 100)/100)
-                RenderText.insert(INSERT, " 고인물 ")
-                RenderText.insert(INSERT, "\n")
-                RenderText.insert(INSERT, "\n")
-                RenderText.insert(INSERT, int(self.__측정캐릭터.전투력가져오기()/self.__노오력전투력['독립공격력'] * 100)/100)
-                RenderText.insert(INSERT, " 노오력")
-                RenderText.insert(INSERT, "\n")
-                RenderText.insert(INSERT, "\n")
-                RenderText.insert(INSERT, int(self.__측정캐릭터.전투력가져오기() / self.__퀘전전투력['독립공격력'] * 100)/100)
-                RenderText.insert(INSERT, " 퀘전")
-                RenderText.insert(INSERT, "\n")
-                RenderText.insert(INSERT, "\n")
+        string = ''
+        출력창 = None
+
+        Tk글쓰기(캐릭터불러오기_Tk, 20, 'bold', '[던파스카우터]', 100, 10)
+        Tk글쓰기(캐릭터불러오기_Tk, 15, 'bold', '서버', 0, 60)
+
+        서버리스트 = ['카인', '디레지에', "시로코",
+                 '프레이', '카시야스', '힐더',
+                 '안톤', '바칼']
+        서버리스트박스 = Tk리스트박스만들기(캐릭터불러오기_Tk, 15, 'bold', 서버리스트, 50, 60)
+
+        Tk글쓰기(캐릭터불러오기_Tk, 15, 'bold', '이름', 0, 90)
+        입력창 = Tk입력창만들기(캐릭터불러오기_Tk, 12, 'bold', 15, 50, 90)
+
+        def 측정():
+            불러오는캐릭터타입 = '측정'
+
+        def 기준():
+            불러오는캐릭터타입 = '기준'
+
+        Tk라디오버튼만들기(캐릭터불러오기_Tk, '측정', 1, 측정, 120, 180)
+        라디오버튼 = Tk라디오버튼만들기(캐릭터불러오기_Tk, '기준', 0, 기준, 120, 160)
+
+        def 불러오기():
+            index = int(서버리스트박스.yview()[0] * 8)
+            불러온캐릭터 = 캐릭터정보()
+            불러온캐릭터.캐릭터가져오기(서버리스트박스.get(index), 입력창.get())
+            string = '이름 : ' + 불러온캐릭터.이름 + '\n'
+            string += '직업 : ' + 불러온캐릭터.직업
+            출력창 = Tk출력창만들기(캐릭터불러오기_Tk, 10, 25, 10, string, 215, 70)
+
+        def 저장하기():
+            if 불러오는캐릭터타입 == '측정':
+                self.__측정캐릭터 = 불러온캐릭터
+
             else:
-                RenderText.insert(INSERT, int(self.__측정캐릭터.전투력가져오기() / self.__고인물전투력['물리,마법공격력'] * 100) / 100)
-                RenderText.insert(INSERT, " 고인물 ")
-                RenderText.insert(INSERT, "\n")
-                RenderText.insert(INSERT, "\n")
-                RenderText.insert(INSERT, int(self.__측정캐릭터.전투력가져오기() / self.__노오력전투력['물리,마법공격력'] * 100) / 100)
-                RenderText.insert(INSERT, " 노오력")
-                RenderText.insert(INSERT, "\n")
-                RenderText.insert(INSERT, "\n")
-                RenderText.insert(INSERT, int(self.__측정캐릭터.전투력가져오기() / self.__퀘전전투력['물리,마법공격력'] * 100) / 100)
-                RenderText.insert(INSERT, " 퀘전")
-                RenderText.insert(INSERT, "\n")
-                RenderText.insert(INSERT, "\n")
+                self.__기준캐릭터 = 불러온캐릭터
+            출력창 = Tk출력창만들기(캐릭터불러오기_Tk, 10, 25, 10, '저장되었습니다.', 215, 70)
+
+        def 돌아가기():
+            self.메뉴Tk()
+
+        Tk버튼만들기(캐릭터불러오기_Tk, 12, 'bold', '불러오기', 불러오기, 20, 125)
+        Tk버튼만들기(캐릭터불러오기_Tk, 12, 'bold', '저장하기', 저장하기, 110, 125)
+        Tk버튼만들기(캐릭터불러오기_Tk, 12, 'bold', '돌아가기', 돌아가기, 20, 165)
+
+        Tk글쓰기(캐릭터불러오기_Tk, 12, 'bold', '불러오기결과', 250, 47)
+
+        출력창 = Tk출력창만들기(캐릭터불러오기_Tk, 10, 25, 10, '불러온 캐릭터가 없습니다.', 215, 70)
+
+        if self.Scene != None:
+            self.Scene.destroy()
+
+        self.Scene = 캐릭터불러오기_Tk
+
+    def 전투력측정하기(self):
+        전투력측정하기_Tk = Tk()
+        전투력측정하기_Tk.geometry(Tk크기설명(440, 500, self.Tk_Position['x'] - 150, self.Tk_Position['y']))
+
+        Tk글쓰기(전투력측정하기_Tk, 20, 'bold', '[던파스카우터 : 전투력측정하기]', 0, 0)
+
+        Tk글쓰기(전투력측정하기_Tk, 12, 'bold', '공격 타입', 25, 40)
+        공격타입리스트 = ['물리공격력', '마법공격력', '독립공격력']
+        공격타입리스트박스 = Tk리스트박스만들기(전투력측정하기_Tk, 12, 'bold', 공격타입리스트, 110, 40)
+
+        Tk글쓰기(전투력측정하기_Tk, 12, 'bold', '측정 타입', 25, 70)
+        측정타입리스트 = ['퀘전', '노력', '모인물', '기준캐릭']
+        공격타입리스트박스 = Tk리스트박스만들기(전투력측정하기_Tk, 12, 'bold', 측정타입리스트, 110, 70)
 
 
-    ## GUI의 제목을 탑에다 적자
+        def 측정하기():
+            출력창 = Tk출력창만들기(전투력측정하기_Tk, 10, 54, 28, '측정하였습니다..', 30, 110)
 
-    def 앱상태기준캐릭터불러오기(self):
+        Tk버튼만들기(전투력측정하기_Tk, 17, 'bold', '측정하기', 측정하기, 270, 40)
 
-        self.기준캐릭터불러오기Tk = Tk()
-        self.기준캐릭터불러오기Tk.geometry(getViewport(self.root_Tk_width, self.root_Tk_height, self.root_Tk_x, self.root_Tk_y))
-        self.InitSearchListBox()
-        self.drawedTk = self.기준캐릭터불러오기Tk
-
-    def 앱상태측정캐릭터불러오기(self):
-        self.AppState = '측정캐릭터불러오기'
-
-    def 앱상태측정캐릭터아이템변경(self):
-        self.AppState = '측정캐릭터아이템변경'
-
-    def 앱상태측정캐릭터측정하기(self):
-        self.AppState = '측정캐릭터측정하기'
+        출력창 = Tk출력창만들기(전투력측정하기_Tk, 10, 54, 28, '저장되었습니다.', 30, 110)
 
 
 
+        if self.Scene != None:
+            self.Scene.destroy()
 
-    def RootAppTopText(self):
-        TempFont = font.Font(self.메뉴_Tk, size=20, weight='bold', family='Consolas')
-        MainText = Label(self.메뉴_Tk, font=TempFont, text="[던파스카우터!]")
-        MainText.pack()
-        MainText.place(x=0, y=0)
+        self.Scene = 전투력측정하기_Tk
 
-    def RootAppButton(self):
-        TempFont = font.Font(self.메뉴_Tk, size=14, weight='bold', family='Consolas')
+    def 메뉴Tk(self):
+        메뉴_Tk = Tk()
+        메뉴_Tk.geometry(Tk크기설명(200, 270, self.Tk_Position['x'], self.Tk_Position['y']))
+        Tk글쓰기(메뉴_Tk, 20, 'bold', '[던파스카우터]', 0, 10)
+        Tk버튼만들기(메뉴_Tk, 15, 'bold', '캐릭터불러오기', self.캐릭터불러오기, 20, 60)
+        Tk버튼만들기(메뉴_Tk, 15, 'bold', '캐릭터설정하기', None, 20, 100)
+        Tk버튼만들기(메뉴_Tk, 15, 'bold', '전투력측정하기', self.전투력측정하기, 20, 140)
+        Tk버튼만들기(메뉴_Tk, 15, 'bold', '     메일    ', None, 20, 180)
+        Tk버튼만들기(메뉴_Tk, 15, 'bold', '     종료    ', self.종료, 20, 220)
+        if (self.Scene != None):
+            self.Scene.destroy()
 
-        기준캐릭터불러오기버튼 = Button(self.메뉴_Tk, font=TempFont, text="기준 캐릭터 불러오기", command=self.앱상태기준캐릭터불러오기)
-        기준캐릭터불러오기버튼.pack()
-        기준캐릭터불러오기버튼.place(x=0, y=40)
+        self.Scene = 메뉴_Tk
 
-        TempFont = font.Font(self.메뉴_Tk, size=14, weight='bold', family='Consolas')
 
-        측정캐릭터불러오기버튼 = Button(self.메뉴_Tk, font=TempFont, text="측정 캐릭터 불러오기", command=self.앱상태측정캐릭터불러오기)
-        측정캐릭터불러오기버튼.pack()
-        측정캐릭터불러오기버튼.place(x=0, y=80)
 
-        TempFont = font.Font(self.메뉴_Tk, size=14, weight='bold', family='Consolas')
 
-        측정캐릭터아이템변경버튼 = Button(self.메뉴_Tk, font=TempFont, text="측정 캐릭 아이템변경", command=self.앱상태측정캐릭터아이템변경)
-        측정캐릭터아이템변경버튼.pack()
-        측정캐릭터아이템변경버튼.place(x=0, y=120)
+    def 캐릭터설정하기(self):
+        pass
 
-        TempFont = font.Font(self.메뉴_Tk, size=14, weight='bold', family='Consolas')
 
-        측정캐릭터아이템변경버튼 = Button(self.메뉴_Tk, font=TempFont, text="측정 캐릭터 측정하기", command=self.앱상태측정캐릭터측정하기)
-        측정캐릭터아이템변경버튼.pack()
+    def 메일(self):
+        pass
 
-        측정캐릭터아이템변경버튼.place(x=0, y=160)
+    def 종료(self):
+        self.Scene.destroy()
 
-    def InitSearchListBox(self):
-        global SearchListBox
-        TempFont = font.Font(self.메뉴_Tk, size=15, weight='bold', family='Consolas')
-        MainText = Label(self.메뉴_Tk, font=TempFont, text="서버 ")
-        MainText.pack()
-        MainText.place(x=self.root_Tk_width, y=100)
 
-        ListBoxScrollbar = Scrollbar(self.메뉴_Tk)
-        ListBoxScrollbar.pack()
-        ListBoxScrollbar.place(x=self.root_Tk_x + self.root_Tk_width, y=90)
-        SearchListBox = Listbox(self.메뉴_Tk, font=TempFont, activestyle='none',
-                                width=10, height=1, borderwidth=12, relief='ridge',
-                                yscrollcommand=ListBoxScrollbar.set)
 
-        SearchListBox.insert(1, "카인")
-        SearchListBox.insert(2, "디레지에")
-        SearchListBox.insert(3, "시로코")
-        SearchListBox.insert(4, "프레이")
-        SearchListBox.insert(5, "카시야스")
-        SearchListBox.insert(6, "힐더")
-        SearchListBox.insert(7, "안톤")
-        SearchListBox.insert(8, "바칼")
-        SearchListBox.pack()
-        print(self.root_Tk_x)
-        SearchListBox.place(x=self.root_Tk_width, y=90)
-        ListBoxScrollbar.config(command=SearchListBox.yview)
-
-    def InitInputLabel(self):
-        global InputLabel
-        TempFont = font.Font(self.메뉴_Tk, size=15, weight='bold', family='Consolas')
-        MainText = Label(self.메뉴_Tk, font=TempFont, text="이름 ")
-        MainText.pack()
-        MainText.place(x=10, y=155)
-
-        InputLabel = Entry(self.메뉴_Tk, font=TempFont, width=15, borderwidth=12, relief='ridge')
-        InputLabel.pack()
-        InputLabel.place(x=70, y=145)
-
-    def InitSearchButton(self):
-        TempFont = font.Font(self.메뉴_Tk, size=12, weight='bold', family='Consolas')
-        SearchButton = Button(self.메뉴_Tk, font=TempFont, text="검색", command=self.SearchButtonAction)
-        SearchButton.pack()
-        SearchButton.place(x=330, y=100)
-
-    def InitRenderText(self):
-        global RenderText
-
-        #RenderTextScrollbar = Scrollbar(self.메뉴_Tk)
-        #RenderTextScrollbar.pack()
-        #RenderTextScrollbar.place(x=375, y=220)
-
-        TempFont = font.Font(self.메뉴_Tk, size=10, family='Consolas')
-        RenderText = Text(self.메뉴_Tk, width=49, height=23, borderwidth=12,
-                          relief='ridge') #yscrollcommand=RenderTextScrollbar.set)
-        RenderText.pack()
-        RenderText.place(x=10, y=235)
-        #RenderTextScrollbar.config(command=RenderText.yview)
-        #RenderTextScrollbar.pack(side=RIGHT, fill=BOTH)
-
-        RenderText.configure(state='disabled')
-
+    
     def __측정_캐릭터_설정하기(self):
         pass
 
 
     def 실행하기(self):
-        if self.AppState == '메뉴':
-            self.RootAppTopText()
-            self.RootAppButton()
-
-        self.drawedTk.mainloop()
+        self.Scene.mainloop()
 
 
 fw = 던파스카우터프레임워크()

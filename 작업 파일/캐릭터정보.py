@@ -8,7 +8,7 @@ class 캐릭터정보 :
         self.__캐릭터장비사전 = None
         self.__나의세트아이템사전 = {}
 
-        self.캐릭터이름 = ""
+        self.이름 = ""
         self.__캐릭터타입 = None
         self.직업 = None
         self.__힘 = 0
@@ -89,7 +89,7 @@ class 캐릭터정보 :
         self.__캐릭터장비사전 = None
         self.__나의세트아이템사전 = {}
 
-        self.캐릭터이름 = ""
+        self.이름 = ""
         self.__캐릭터타입 = None
         self.직업 = None
         self.__힘 = 0
@@ -196,7 +196,7 @@ class 캐릭터정보 :
         self.__캐릭터스탯사전 =  캐릭터스탯사전
 
     def 캐릭터스탯사전적용하기(self):
-        self.캐릭터이름 = self.__캐릭터스탯사전['characterName']
+        self.이름 = self.__캐릭터스탯사전['characterName']
         self.직업 = self.__캐릭터스탯사전['jobGrowName']
         self.__힘 = self.__캐릭터스탯사전['status'][2]['value']
         self.__지능 = self.__캐릭터스탯사전['status'][3]['value']
@@ -215,17 +215,16 @@ class 캐릭터정보 :
             if(self.__속성강화 < self.__캐릭터스탯사전['status'][23 + i]['value']):
                 self.__속성강화 = self.__캐릭터스탯사전['status'][23 + i]['value']
 
-    def 캐릭터가져오기(self, 서버, 이름, 공격타입):
+    def 캐릭터가져오기(self, 서버, 이름):
         self.__초기화()
         self.캐릭터장비사전저장하기(캐릭터장비사전불러오기(서버, 이름))
         self.캐릭터장비사전적용하기()
         self.캐릭터스탯사전저장하기(캐릭터스탯사전불러오기(서버, 이름))
         self.캐릭터스탯사전적용하기()
-        self.전투력계산(공격타입)
 
 
     def 출력(self):
-        print("이름 : ", self.캐릭터이름)
+        print("이름 : ", self.이름)
         print("직업 : ", self.직업)
         print("힘 : ", self.__힘)
         print("지능 :", self.__지능)
@@ -245,3 +244,6 @@ class 캐릭터정보 :
         print("속성추가데미지", self.__속성추가데미지)
         print("모공",self.__모든공격력증가)
         print("전투력",self.__전투력)
+        
+    def __str__(self):
+        return  "이름 : " +  self.이름 + '\n' + "직업 : " +  self.직업
