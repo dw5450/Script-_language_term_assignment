@@ -5,7 +5,7 @@ from 세트아이템사전 import *
 class 캐릭터정보 :
     def __init__(self):
         self.__캐릭터스탯사전 = None
-        self.__캐릭터장비사전 = None
+        self.캐릭터장비사전 = None
         self.__나의세트아이템사전 = {}
 
         self.이름 = ""
@@ -45,11 +45,18 @@ class 캐릭터정보 :
 
 
     def 아이템바꾸기(self, ItemInfo):
-        itemType = ItemInfo['itemType']
-        for data in self.__캐릭터장비사전:
-            if  data['itemType'] == itemType:
+        itemType = ItemInfo['itemTypeDetail']
+        '''
+        for data in self.캐릭터장비사전:
+            if  data['itemTypeDetail'] == itemType:
                 data = ItemInfo
                 break
+        '''
+
+        for i in range(len(self.캐릭터장비사전) - 1):
+            print (self.캐릭터장비사전[i]['itemTypeDetail'])
+            if self.캐릭터장비사전[i]['itemTypeDetail'] == itemType:
+                self.캐릭터장비사전[i] = ItemInfo
 
         self.캐릭터장비사전적용하기()
 
@@ -93,7 +100,7 @@ class 캐릭터정보 :
 
     def __초기화(self):
         self.__캐릭터스탯사전 = None
-        self.__캐릭터장비사전 = None
+        self.캐릭터장비사전 = None
         self.__나의세트아이템사전 = {}
 
         self.이름 = ""
@@ -165,10 +172,10 @@ class 캐릭터정보 :
 
 
     def 캐릭터장비사전저장하기(self, 캐릭터장비사전):
-        self.__캐릭터장비사전 = 캐릭터장비사전
+        self.캐릭터장비사전 = 캐릭터장비사전
 
     def 캐릭터장비사전적용하기(self):
-        for 장비정보 in self.__캐릭터장비사전:
+        for 장비정보 in self.캐릭터장비사전:
             장비아이디 = 장비정보['itemId']
             if 'setItemName' in 장비정보.keys():
                 if 장비정보['setItemName'] in self.__나의세트아이템사전.keys():
