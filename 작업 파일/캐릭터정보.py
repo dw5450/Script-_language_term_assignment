@@ -46,15 +46,7 @@ class 캐릭터정보 :
 
     def 아이템바꾸기(self, ItemInfo):
         itemType = ItemInfo['itemTypeDetail']
-        '''
-        for data in self.캐릭터장비사전:
-            if  data['itemTypeDetail'] == itemType:
-                data = ItemInfo
-                break
-        '''
-
         for i in range(len(self.캐릭터장비사전) - 1):
-            print (self.캐릭터장비사전[i]['itemTypeDetail'])
             if self.캐릭터장비사전[i]['itemTypeDetail'] == itemType:
                 self.캐릭터장비사전[i] = ItemInfo
 
@@ -125,6 +117,20 @@ class 캐릭터정보 :
         self.모든공격력증가 = 0
         self.스킬공격력증가 = 0
         self.방어력감소 = 0
+
+    def __부가효과만초기화(self):
+        self.힘_지능_증가 = 0
+        self.물리_마법_독립_공격력증가 = 0
+        self.증가데미지 = 0
+        self.추가증가데미지 = 0
+        self.크리티컬증가데미지 = 0
+        self.추가크리티컬증가데미지 = 0
+        self.추가데미지 = 0
+        self.속성추가데미지 = 0
+        self.모든공격력증가 = 0
+        self.스킬공격력증가 = 0
+        self.방어력감소 = 0
+
         
     def __장비설명해석후적용(self, 장비설명):
         설명단어리스트 = 장비설명.split()
@@ -175,6 +181,7 @@ class 캐릭터정보 :
         self.캐릭터장비사전 = 캐릭터장비사전
 
     def 캐릭터장비사전적용하기(self):
+        self.__부가효과만초기화()
         for 장비정보 in self.캐릭터장비사전:
             장비아이디 = 장비정보['itemId']
             if 'setItemName' in 장비정보.keys():
