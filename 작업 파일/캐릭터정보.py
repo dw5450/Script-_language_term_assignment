@@ -43,9 +43,15 @@ class 캐릭터정보 :
 
         return result
 
-    def 전투력가져오기(self):
-        return self.__전투력
 
+    def 아이템바꾸기(self, ItemInfo):
+        itemType = ItemInfo['itemType']
+        for data in self.__캐릭터장비사전:
+            if  data['itemType'] == itemType:
+                data = ItemInfo
+                break
+
+        self.캐릭터장비사전적용하기()
 
     def 전투력계산(self, 공격력적용방식):
         힘or지능 = 0

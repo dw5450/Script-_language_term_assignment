@@ -91,6 +91,16 @@ def 캐릭터스탯사전불러오기(서버이름, 캐릭터이름):
         return False
 
 
+def 장비가져오기(아이템이름):
+    아이템이름 = urllib.parse.quote(아이템이름)
+    던파API연결.request("GET", "https://api.neople.co.kr/df/items?itemName=" + 아이템이름 + "&q=minLevel:<minLevel>,maxLevel:<maxLevel>,rarity:<rarity>,trade:<trade>&limit=<limit>&wordType=<wordType>&apikey=" + apikey)  # 서버에 GET 요청
+    req = 던파API연결.getresponse()
+    cLen = req.getheader("Content-Length")  # 가져온 데이터 길이
+    data = req.read(int(cLen))
+    dict = json.loads(data)
+    req.close()
+    던파API연결.close()
+    return dict['rows'][0]
 
 def 장비설명불러오기(장비아이디):
     던파API연결.request("GET", "https://api.neople.co.kr/df/items/" + 장비아이디 + "?apikey=" + apikey)  # 서버에 GET 요청
@@ -101,3 +111,4 @@ def 장비설명불러오기(장비아이디):
     req.close()
     던파API연결.close()
     return dict['itemExplain']
+
