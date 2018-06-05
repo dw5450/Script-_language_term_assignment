@@ -45,11 +45,13 @@ class 캐릭터정보 :
 
 
     def 아이템바꾸기(self, ItemInfo):
-        itemType = ItemInfo['itemTypeDetail']
+        itemType = ItemInfo['itemTypeDetail'].split()
         for i in range(len(self.캐릭터장비사전) - 1):
-            if self.캐릭터장비사전[i]['itemTypeDetail'] == itemType:
+            if self.캐릭터장비사전[i]['itemTypeDetail'].split()[-1] == itemType[-1] :
                 self.캐릭터장비사전[i] = ItemInfo
 
+        self.캐릭터스탯사전저장하기(캐릭터스탯사전불러오기(self.서버, self.이름))
+        self.캐릭터스탯사전적용하기()
         self.캐릭터장비사전적용하기()
 
     def 전투력계산(self, 공격력적용방식):
@@ -193,22 +195,27 @@ class 캐릭터정보 :
             self.__장비설명해석후적용(장비설명)
 
         for key  in self.__나의세트아이템사전.keys():
-            if  self.__나의세트아이템사전[key]['type'] == '방어구':
-                if self.__나의세트아이템사전[key]['num'] > 4:
-                    if key in 세트아이템_5.keys():
-                        self.__장비설명해석후적용(세트아이템_5[key])
+            if self.__나의세트아이템사전[key]['num'] > 1:
+                if key in 세트아이템_2.keys():
+                    self.__장비설명해석후적용(세트아이템_2[key])
 
-                if self.__나의세트아이템사전[key]['level'] == 90 and self.__나의세트아이템사전[key]['num'] > 2:
-                    if key in 세트아이템_3.keys():
-                        self.__장비설명해석후적용(세트아이템_3[key])
-            else:
-                if key == '바이라바의 계승자' and self.__나의세트아이템사전[key]['num'] > 1:
-                    if key in 세트아이템_2.keys():
-                        self.__장비설명해석후적용(세트아이템_2[key])
+            if self.__나의세트아이템사전[key]['num'] > 2:
+                if key in 세트아이템_3.keys():
+                    self.__장비설명해석후적용(세트아이템_3[key])
 
-                if self.__나의세트아이템사전[key]['num'] > 2:
-                    if key in 세트아이템_3.keys():
-                        self.__장비설명해석후적용(세트아이템_3[key])
+            if self.__나의세트아이템사전[key]['num'] > 4:
+                if key in 세트아이템_5.keys():
+                    self.__장비설명해석후적용(세트아이템_5[key])
+
+            if self.__나의세트아이템사전[key]['num'] > 5:
+                if key in 세트아이템_6.keys():
+                    self.__장비설명해석후적용(세트아이템_6[key])
+
+
+
+
+
+
 
         ##추후에 장비 아이템 적용 알고리즘 변경
 
