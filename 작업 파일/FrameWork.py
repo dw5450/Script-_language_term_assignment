@@ -1,6 +1,7 @@
 from 던파API파싱하기 import *
 from 캐릭터정보 import *
 from myTk import *
+from 메일보내기용 import *
 import copy
 
 
@@ -29,7 +30,7 @@ class 던파스카우터프레임워크:
         Tk버튼만들기(메뉴_Tk, 15, 'bold', '캐릭터불러오기', self.캐릭터불러오기, 20, 60)
         Tk버튼만들기(메뉴_Tk, 15, 'bold', '캐릭터설정하기', self.캐릭터설정하기Tk, 20, 100)
         Tk버튼만들기(메뉴_Tk, 15, 'bold', '전투력측정하기', self.전투력측정하기, 20, 140)
-        Tk버튼만들기(메뉴_Tk, 15, 'bold', '     메일    ', None, 20, 180)
+        Tk버튼만들기(메뉴_Tk, 15, 'bold', '     메일    ', self.메일, 20, 180)
         Tk버튼만들기(메뉴_Tk, 15, 'bold', '     종료    ', self.종료, 20, 220)
 
         if (self.Scene != None):
@@ -286,7 +287,7 @@ class 던파스카우터프레임워크:
         캐릭터설정하기_Tk.geometry(Tk크기설명(500, 400, self.Tk_Position['x'] - 100, self.Tk_Position['y']))
 
         # 제목쓰기
-        Tk글쓰기(캐릭터설정하기_Tk, 20, 'bold', '[던파스카우터]', 100, 10)
+        Tk글쓰기(캐릭터설정하기_Tk, 20, 'bold', '[던파스카우터 : 캐릭터설정하기]', 40, 10)
 
         # 아이템이름 입력창 만들기
         Tk글쓰기(캐릭터설정하기_Tk, 12, 'bold', '아이템명', 10, 60)
@@ -338,8 +339,32 @@ class 던파스카우터프레임워크:
 
         self.Scene = 캐릭터설정하기_Tk
 
+    def 메일보내기(self):
+        global 메일입력창
+        메일주소 = 메일입력창.get()
+        print(메일주소)
+        print (type(메일주소))
+        SendMail(메일주소)
+
     def 메일(self):
-        pass
+        global 메일입력창
+        메일_Tk = Tk()
+        메일_Tk.geometry(Tk크기설명(300, 150, self.Tk_Position['x'] - 100, self.Tk_Position['y']))
+
+        Tk글쓰기(메일_Tk, 20, 'bold', '[던파스카우터 : 메일]', 0, 10)
+
+        # 아이템이름 입력창 만들기
+        Tk글쓰기(메일_Tk, 12, 'bold', '메일 주소', 10, 60)
+        메일입력창 = Tk입력창만들기(메일_Tk, 12, 'bold', 20, 90, 60)
+
+        # 명령 버튼 만들기
+        Tk버튼만들기(메일_Tk, 12, 'bold', '메일보내기', self.메일보내기, 40, 95)
+        Tk버튼만들기(메일_Tk, 12, 'bold', '돌아가기', self.메뉴Tk, 180, 95)
+
+        if self.Scene != None:
+            self.Scene.destroy()
+
+        self.Scene = 메일_Tk
 
     def 종료(self):
         self.Scene.destroy()
