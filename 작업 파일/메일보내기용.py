@@ -7,7 +7,7 @@ from email.mime.text import MIMEText
 
 #global value
 
-def SendMail(MailAdress):
+def SendMail(MailAdress,info_text):
     host = "smtp.gmail.com" # Gmail STMP 서버 주소.
     port = "587"
     htmlFileName = "logo.html"
@@ -16,13 +16,13 @@ def SendMail(MailAdress):
     recipientAddr = MailAdress   # 받는 사람 email 주소.
 
     msg = MIMEBase("multipart", "alternative")
-    msg['Subject'] = "Test email in Python 3.0"
+    msg['Subject'] = "던파스카우터! 정보 이메일"
     msg['From'] = senderAddr
     msg['To'] = recipientAddr
 
     # MIME 문서를 생성합니다.
     #htmlFD = open(htmlFileName, 'rb')
-    HtmlPart = MIMEText('졸작이 성공했으면 좋겠어오','html', _charset = 'UTF-8' )
+    HtmlPart = MIMEText(info_text,'html', _charset = 'UTF-8' )
     #htmlFD.close()
 
     # 만들었던 mime을 MIMEBase에 첨부 시킨다.
