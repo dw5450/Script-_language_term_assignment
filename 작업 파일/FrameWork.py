@@ -1,7 +1,13 @@
+import urllib
+import urllib.request
+from io import BytesIO
+from PIL import Image, ImageTk
+
 from 던파API파싱하기 import *
 from 캐릭터정보 import *
 from myTk import *
 from 메일보내기용 import *
+from tkinter import *
 import copy
 
 
@@ -20,23 +26,38 @@ class 던파스카우터프레임워크:
         self.Scene = None
         self.메뉴Tk()  # 신에 메뉴Tk를 설정한다.
 
+        self.status = None
+
 
 
     #메뉴 Tk
     def 메뉴Tk(self):
-        메뉴_Tk = Tk()
-        메뉴_Tk.geometry(Tk크기설명(200, 270, self.Tk_Position['x'], self.Tk_Position['y']))
-        Tk글쓰기(메뉴_Tk, 20, 'bold', '[던파스카우터]', 0, 10)
-        Tk버튼만들기(메뉴_Tk, 15, 'bold', '캐릭터불러오기', self.캐릭터불러오기, 20, 60)
-        Tk버튼만들기(메뉴_Tk, 15, 'bold', '캐릭터설정하기', self.캐릭터설정하기Tk, 20, 100)
-        Tk버튼만들기(메뉴_Tk, 15, 'bold', '전투력측정하기', self.전투력측정하기, 20, 140)
-        Tk버튼만들기(메뉴_Tk, 15, 'bold', '     메일    ', self.메일, 20, 180)
-        Tk버튼만들기(메뉴_Tk, 15, 'bold', '     종료    ', self.종료, 20, 220)
+
+        self.status = '메뉴'
 
         if (self.Scene != None):
             self.Scene.destroy()
 
+        메뉴_Tk = Tk()
+        메뉴_Tk.geometry(Tk크기설명(250, 320, self.Tk_Position['x'], self.Tk_Position['y']))
+
+        photo = PhotoImage(file="던파_로고.png")
+        # 디폴트 이미지 파일
+        imageLabel = Label(메뉴_Tk, image=photo)
+        imageLabel.place(x = -20, y = 70)
+
+        Tk글쓰기(메뉴_Tk, 20, 'bold', '[던파스카우터]', 25, 10)
+        Tk버튼만들기(메뉴_Tk, 15, 'bold', '캐릭터불러오기', self.캐릭터불러오기, 45, 60)
+        Tk버튼만들기(메뉴_Tk, 15, 'bold', '캐릭터설정하기', self.캐릭터설정하기Tk, 45, 105)
+        Tk버튼만들기(메뉴_Tk, 15, 'bold', '전투력측정하기', self.전투력측정하기, 45, 150)
+        Tk버튼만들기(메뉴_Tk, 15, 'bold', '     메일    ', self.메일, 45, 195)
+        Tk버튼만들기(메뉴_Tk, 15, 'bold', '     종료    ', self.종료, 45, 240)
+
         self.Scene = 메뉴_Tk
+
+        메뉴_Tk.mainloop()
+
+
 
     #캐릭터 불러오기
     def 측정(self):
@@ -58,6 +79,7 @@ class 던파스카우터프레임워크:
 
         임시캐릭터 = 캐릭터정보()
         임시캐릭터.캐릭터불러오기(서버, 이름)
+        #임시캐릭터.이미지 = 캐릭터이미지가져오기(서버, 이름)
 
         string = "이름 : " + 임시캐릭터.이름 + '\n'
         string += '직업 : ' + 임시캐릭터.직업 + '\n'
@@ -78,6 +100,7 @@ class 던파스카우터프레임워크:
         Tk출력창만들기(캐릭터불러오기_Tk, 10, 25, 10, '저장되었습니다.', 215, 70)
 
     def 캐릭터불러오기(self):
+        self.status = '캐릭터불러오기'
         global 서버리스트박스
         global 캐릭터이름입력창
         global 임시캐릭터
@@ -134,32 +157,33 @@ class 던파스카우터프레임워크:
         측정타입 = 측정타입리스트박스.get(int(측정타입리스트박스.yview()[0] * 4))
 
         #이미지 추가 필요
+        if 측정캐릭터 != None:
+            string = '이름 : ' + 측정캐릭터.이름 + '\n\n'
+            string += '서버 : ' + 측정캐릭터.서버 + '\n\n'
+            string += '직업 : ' + 측정캐릭터.직업 + '\n\n'
 
-        string = '이름 : ' + 측정캐릭터.이름 + '\n\n'
-        string += '서버 : ' + 측정캐릭터.서버 + '\n\n'
-        string += '직업 : ' + 측정캐릭터.직업 + '\n\n'
+            if 측정타입 == '퀘전':
+                string += '전투력 : ' + str(int(측정캐릭터.전투력계산(공격타입) / 퀘전전투력[공격타입] * 100) / 100) + ' 퀘전'
 
-        if 측정타입 == '퀘전':
-            string += '전투력 : ' + str(int(측정캐릭터.전투력계산(공격타입) / 퀘전전투력[공격타입] * 100) / 100) + ' 퀘전'
+            elif 측정타입 == '노력':
+                string += '전투력 : ' + str(int(측정캐릭터.전투력계산(공격타입) / 노오력전투력[공격타입] * 100) / 100) + ' 노력'
 
-        elif 측정타입 == '노력':
-            string += '전투력 : ' + str(int(측정캐릭터.전투력계산(공격타입) / 노오력전투력[공격타입] * 100) / 100) + ' 노력'
+            elif 측정타입 == '모인물':
+                string += '전투력 : ' + str(int(측정캐릭터.전투력계산(공격타입) / 고인물전투력[공격타입] * 100) / 100) + ' 모인물'
 
-        elif 측정타입 == '모인물':
-            string += '전투력 : ' + str(int(측정캐릭터.전투력계산(공격타입) / 고인물전투력[공격타입] * 100) / 100) + ' 모인물'
+            elif 측정타입 == '기준캐릭' and 기준캐릭터 != None:
+                string += '전투력 : ' + str(int(측정캐릭터.전투력계산(공격타입) / 기준캐릭터.전투력계산(공격타입) * 100) / 100) + ' ' + 기준캐릭터.이름
+            else:
+                string = "에러가 발생하였습니다"
 
-        elif 측정타입 == '기준캐릭' and 기준캐릭터 != None:
-            string += '전투력 : ' + str(int(측정캐릭터.전투력계산(공격타입) / 기준캐릭터.전투력계산(공격타입) * 100) / 100) + ' ' + 기준캐릭터.이름
-        else:
-            string = "에러가 발생하였습니다"
+            string += '\n\n'
 
-        string += '\n\n'
+            Tk출력창만들기(전투력측정하기_Tk, 10, 54, 28, string, 30, 110)
 
-        Tk출력창만들기(전투력측정하기_Tk, 10, 54, 28, string, 30, 110)
 
-        
 
     def 전투력측정하기(self):
+        self.status = '전투력측정하기'
         global 공격타입리스트박스
         global 측정타입리스트박스
         global 전투력측정하기_Tk
@@ -274,6 +298,8 @@ class 던파스카우터프레임워크:
         return string;
 
     def 캐릭터설정하기Tk(self):
+
+        self.status = '캐릭터설정하기'
         global 캐릭터설정하기_Tk
         global 아이템이름입력창
         global 아이템저장캐릭터타입
@@ -380,6 +406,7 @@ class 던파스카우터프레임워크:
         SendMail(메일주소, info_text)
 
     def 메일(self):
+        self.status = '메일'
         global 메일입력창
         메일_Tk = Tk()
         메일_Tk.geometry(Tk크기설명(300, 150, self.Tk_Position['x'] - 100, self.Tk_Position['y']))
@@ -401,11 +428,6 @@ class 던파스카우터프레임워크:
 
     def 종료(self):
         self.Scene.destroy()
-
-
-    def __측정_캐릭터_설정하기(self):
-        pass
-
 
     def 실행하기(self):
         self.Scene.mainloop()

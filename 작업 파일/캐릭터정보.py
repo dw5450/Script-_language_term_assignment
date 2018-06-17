@@ -7,9 +7,11 @@ class 캐릭터정보 :
         self.__캐릭터스탯사전 = None
         self.캐릭터장비사전 = None
         self.__나의세트아이템사전 = {}
+        self.이미지 = None
 
         self.이름 = ""
         self.서버 = ''
+        self.캐릭터이미지 = None
         self.__캐릭터타입 = None
         self.직업 = None
         self.힘 = 0
@@ -249,6 +251,8 @@ class 캐릭터정보 :
         self.캐릭터장비사전적용하기()
         self.캐릭터스탯사전저장하기(캐릭터스탯사전불러오기(서버, 이름))
         self.캐릭터스탯사전적용하기()
+        self.캐릭터이미지 = 캐릭터이미지가져오기(서버, 이름)
+
 
 
     def 출력(self):

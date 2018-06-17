@@ -1,6 +1,9 @@
 import http.client
 import json
 import urllib
+import urllib.request
+from io import BytesIO
+from PIL import Image, ImageTk
 
 server = "api.neople.co.kr"
 apikey = "9BdgXATgR7uy3XIzIaJPBHfECPoJGKlq"
@@ -112,3 +115,31 @@ def 장비설명불러오기(장비아이디):
     던파API연결.close()
     return dict['itemExplain']
 
+
+
+def 캐릭터이미지가져오기(서버이름, 캐릭터이름):
+    서버아이디 = 게임서버사전[서버이름]
+    캐릭터이름 = urllib.parse.quote(캐릭터이름)
+    던파API연결.request("GET",
+                    "https://api.neople.co.kr/df/servers/" + 서버아이디 + "/characters?characterName=" + 캐릭터이름 + "&limit=<limit>&wordType=<wordType>&apikey=" + apikey)  # 서버에 GET 요청
+    req = 던파API연결.getresponse()  # openAPI 서버에서 보내온 요청을 받아옴
+    # print(req.status, req.reason)
+    if (req.status == 200):
+        cLen = req.getheader("Content-Length")  # 가져온 데이터 길이
+        data = req.read(int(cLen))
+        dict = json.loads(data)
+
+        서버아이디 = 게임서버사전[서버이름]
+        캐릭터아이디 = dict['rows'][0]["characterId"]
+
+        url = 'https://img-api.neople.co.kr/df/servers/'+서버아이디+'/characters/' + 캐릭터아이디 + '?zoom=<zoom>'
+        with urllib.request.urlopen(url) as u:
+            raw_data = u.read()
+
+        req.close()
+        return Image.open(BytesIO(raw_data))
+
+    else:
+        req.close()
+        던파API연결.close()
+        return False
